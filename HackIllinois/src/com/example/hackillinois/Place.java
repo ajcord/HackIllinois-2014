@@ -12,7 +12,6 @@ public class Place
 	private LatLng coords;
 	private String description;
 	private String hint;
-	
 
 
 	public Place(String name, boolean hasBeen, LatLng coords,

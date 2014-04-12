@@ -20,6 +20,36 @@ public class ScavengerHunt
 		this.places = places;
 		this.id = id;
 	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Date getBeginDate() {
+		return beginDate;
+	}
+	public void setBeginDate(Date beginDate) {
+		this.beginDate = beginDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	public ArrayList<Place> getPlaces() {
+		return places;
+	}
+	public void setPlaces(ArrayList<Place> places) {
+		this.places = places;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	@SuppressWarnings("deprecation")
 	public ScavengerHunt(String textfile)
 	{
