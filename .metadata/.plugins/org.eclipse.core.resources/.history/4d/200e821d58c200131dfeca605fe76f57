@@ -1,0 +1,38 @@
+package com.example.hackillinois;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class MainActivity extends Activity {
+	
+	static final LatLng SIEBEL = new LatLng(40.113678, -88.224868);
+	static final LatLng DCL = new LatLng(40.113028, -88.225880);
+	private GoogleMap map;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+    	ArrayList<Place> places = new ArrayList<Place>();
+    	places.add(new Place("Siebel Center for Computer Science", false, SIEBEL,
+    			"", ""));
+    	ScavengerHunt hackIllinoisSH = new ScavengerHunt("HackIllinois Scavenger Hunt",
+    			Date.UTC(2014, 4, 11, 22, 0, 0), Date.UTC(2014,  4,  13,  10,  0,  0),
+    			places, 42);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        if (map != null) {
+        	Marker siebel = map.addMarker(new MarkerOptions().position(SIEBEL).title("Siebel Center for Computer Science"));
+        	Marker dcl = map.addMarker(new MarkerOptions().position(DCL).title("Digital Computer Laboratory"));
+        	
+        }
+    }
+}

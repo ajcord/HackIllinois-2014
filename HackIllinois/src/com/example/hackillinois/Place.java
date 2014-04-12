@@ -1,5 +1,7 @@
 package com.example.hackillinois;
 
+import com.google.android.gms.maps.model.LatLng;
+
 
 public class Place 
 {
@@ -7,13 +9,13 @@ public class Place
 
 	private String name;
 	private boolean hasBeen;
-	private Coordinate coords;
+	private LatLng coords;
 	private String description;
 	private String hint;
 	
 
 
-	public Place(String name, boolean hasBeen, Coordinate coords,
+	public Place(String name, boolean hasBeen, LatLng coords,
 			String description, String hint) {
 		super();
 		this.name = name;
@@ -28,7 +30,7 @@ public class Place
 		String[] place = str.split(".");
 		this.name = place[0];
 		this.hasBeen = place[1].equals("True");
-		this.coords = new Coordinate(Double.parseDouble(place[2]),Double.parseDouble(place[3]));
+		this.coords = new LatLng(Double.parseDouble(place[2]),Double.parseDouble(place[3]));
 		this.description = place[4];
 		this.hint = place[5];
 	}
@@ -48,11 +50,11 @@ public class Place
 		this.hasBeen = hasBeen;
 	}
 
-	public Coordinate getCoords() {
+	public LatLng getCoords() {
 		return coords;
 	}
 
-	public void setCoords(Coordinate coords) {
+	public void setCoords(LatLng coords) {
 		this.coords = coords;
 	}
 
@@ -82,10 +84,10 @@ public class Place
 		StringBuilder.append(hasBeen);
 		StringBuilder.append(".");
 		
-		StringBuilder.append(coords.getLongitude());
+		StringBuilder.append(coords.latitude);
 		StringBuilder.append(".");
 		
-		StringBuilder.append(coords.getLatitude());
+		StringBuilder.append(coords.longitude);
 		StringBuilder.append(".");
 		
 		StringBuilder.append(description);

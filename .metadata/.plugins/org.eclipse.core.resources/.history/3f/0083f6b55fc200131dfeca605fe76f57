@@ -1,0 +1,88 @@
+package com.example.hackillinois;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+
+public class MainActivity extends Activity {
+	
+	private GoogleMap map;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+    	//Create the scavenger hunt object
+    	ArrayList<Place> places = new ArrayList<Place>();
+    	places.add(new Place("Siebel Center for Computer Science", false, new LatLng(40.113678, -88.224868),
+    			"", ""));
+    	places.add(new Place("Digital Computer Laboratory", false, new LatLng(40.113028, -88.225880),
+    			"", ""));
+    	Date startDate = new Date();
+    	startDate.setTime(Date.UTC(2014, 3, 11, 22, 0, 0));
+    	Date endDate = new Date();
+    	endDate.setTime(Date.UTC(2014,  4,  13,  10,  0,  0));
+    	ScavengerHunt hackIllinoisSH = new ScavengerHunt("HackIllinois Scavenger Hunt",
+    			startDate, endDate, places, 42);
+    	
+    	//Set up the map fragment
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        
+        if (map != null) {
+        	//Add the places markers to the map
+        	for (int i = 0; i < places.size(); i++) {
+        		Place place = places.get(i);
+        		map.addMarker(new MarkerOptions().position(place.getCoords()).title(place.getName()));
+        	}
+        };
+        
+        //Request receiving location updates
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+        	public void onLocationChanged(Location location) {
+        		//doSomethingWithLocation(location);
+        		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        	}
+        	
+        	public void onStatusChanged(String provider, int status, Bundle extras) {}
+        	public void onProviderEnabled(String provider) {}
+        	public void onProviderDisabled(String provider) {}
+        };
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        
+        //Get the last known user location and zoom there
+        Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        LatLng lastKnownLatLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, 10));
+        map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+    }
+    
+    private void centerMapOnMyLocation() {
+
+        map.setMyLocationEnabled(true);
+
+        Location location = map.getMyLocation();
+        LatLng myLocation;
+        if (location != null) {
+             myLocation = new LatLng(location.getLatitude(),
+                    location.getLongitude());
+        }
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
+                15));
+    }
+}
