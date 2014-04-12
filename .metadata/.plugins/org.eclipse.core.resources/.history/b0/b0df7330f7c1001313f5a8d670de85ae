@@ -1,0 +1,11 @@
+package com.example.hackillinois;
+
+import android.R.string;
+
+public class Location 
+{
+	private string name;
+	private bool haveBeen;
+	private 
+	
+}
