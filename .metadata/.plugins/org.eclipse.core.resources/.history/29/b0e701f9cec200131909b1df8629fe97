@@ -82,7 +82,6 @@ public class MainActivity extends Activity {
         
         //Request receiving location updates
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        /*
         LocationListener locationListener = new LocationListener() {
         	public void onLocationChanged(Location location) {
         		//doSomethingWithLocation(location);
@@ -95,7 +94,7 @@ public class MainActivity extends Activity {
         	public void onProviderDisabled(String provider) {}
         };
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        */
+        
         
         //Get the last known user location and zoom there
         Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
