@@ -1,0 +1,303 @@
+package com.example.hackillinois;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import com.google.android.gms.internal.iv;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.view.SurfaceHolder;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
+public class CameraActivity extends Activity implements SensorEventListener {
+
+	private Camera mCamera;
+	private CameraPreview mPreview;
+	// private ViewSwitcher switcher;
+
+	SensorManager sensorManager;
+	private Sensor sensorAccelerometer;
+	private Sensor sensorMagneticField;
+
+	private float[] valuesAccelerometer;
+	private float[] valuesMagneticField;
+
+	private float[] matrixR;
+	private float[] matrixI;
+	private float[] matrixValues;
+
+	private Location currentLocation;
+	private Place target;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.camera_preview);
+		
+		
+		ArrayList<Place> places = new ArrayList<Place>();
+    	places.add(new Place("Siebel Center", false, new LatLng(40.113678, -88.224868),
+    			"", ""));
+    	places.add(new Place("DCL", false, new LatLng(40.113028, -88.225880),
+    			"", ""));
+    	Date startDate = new Date();
+    	startDate.setTime(Date.UTC(2014, 3, 11, 22, 0, 0));
+    	Date endDate = new Date();
+    	endDate.setTime(Date.UTC(2014,  4,  13,  10,  0,  0));
+    	final ScavengerHunt hackIllinoisSH = new ScavengerHunt("HackIllinois Scavenger Hunt",
+    			startDate, endDate, places, 42);
+    	
+    	
+/*
+		ScavengerHunt hackIllinoisSH = null;
+
+		if (getIntent().getExtras() != null) {
+			hackIllinoisSH = new ScavengerHunt(getIntent().getExtras()
+					.getString("scavenger_hunt"));
+		}*/
+
+		// switcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
+		Button mapButton = (Button) findViewById(R.id.mapButton);
+		mapButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// Refresh.sendEmptyMessage(1);
+				// MainActivity.switcher.showPrevious();
+				// setContentView(R.layout.activity_main);
+				mCamera.stopPreview();
+				startActivity(new Intent(CameraActivity.this,
+						MainActivity.class));
+				finish();
+			}
+		});
+		Button takePic = (Button) findViewById(R.id.take_pic);
+		takePic.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// Refresh.sendEmptyMessage(1);
+				// MainActivity.switcher.showPrevious();
+				// setContentView(R.layout.activity_main);
+				//mCamera.takePicture();
+				mCamera.stopPreview();
+				dispatchTakePictureIntent();
+				mCamera.startPreview();
+			}
+		});
+
+		// Create an instance of Camera
+		mCamera = getCameraInstance();
+
+		// Create our Preview view and set it as the content of our activity.
+		mPreview = new CameraPreview(this, mCamera);
+		SurfaceHolder holder = mPreview.getHolder();
+
+		FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+		mCamera.setDisplayOrientation(90);
+		preview.addView(mPreview);
+
+		ImageView img = (ImageView) findViewById(R.id.pointer_overlay); // or
+																		// (ImageView)
+																		// findViewById(R.id.myImageView);
+		img.setImageResource(R.drawable.hack_illinois_arrow);
+		// GeomagneticField gmf = new GeomagneticField();
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		sensorAccelerometer = sensorManager
+				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		sensorMagneticField = sensorManager
+				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+		valuesAccelerometer = new float[3];
+		valuesMagneticField = new float[3];
+
+		matrixR = new float[9];
+		matrixI = new float[9];
+		matrixValues = new float[3];
+
+		// Request receiving location updates
+		LocationManager locationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
+
+		LocationListener locationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
+				// doSomethingWithLocation(location);
+				// LatLng latLng = new LatLng(location.getLatitude(),
+				// location.getLongitude());
+				// map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,
+				// 15));
+				currentLocation = location;
+			}
+
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+			}
+
+			public void onProviderEnabled(String provider) {
+			}
+
+			public void onProviderDisabled(String provider) {
+			}
+		};
+		locationManager.requestLocationUpdates(
+				LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+		// Get the last known user location and zoom there
+		currentLocation = locationManager
+				.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+		target = Calculations.getNearestLocation(currentLocation,
+				hackIllinoisSH.getPlaces());
+
+    	TextView label = (TextView) findViewById(R.id.targetName);
+    	label.setText(target.getName());
+	}
+
+	/** A safe way to get an instance of the Camera object. */
+	public static Camera getCameraInstance() {
+		Camera c = null;
+		try {
+			c = Camera.open(); // attempt to get a Camera instance
+		} catch (Exception e) {
+			// Camera is not available (in use or does not exist)
+		}
+		return c; // returns null if camera is unavailable
+	}
+
+	@Override
+	protected void onResume() {
+
+		sensorManager.registerListener(this, sensorAccelerometer,
+				SensorManager.SENSOR_DELAY_NORMAL);
+		sensorManager.registerListener(this, sensorMagneticField,
+				SensorManager.SENSOR_DELAY_NORMAL);
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+
+		sensorManager.unregisterListener(this, sensorAccelerometer);
+		sensorManager.unregisterListener(this, sensorMagneticField);
+		super.onPause();
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// Auto-generated method stub
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+
+		switch (event.sensor.getType()) {
+		case Sensor.TYPE_ACCELEROMETER:
+			for (int i = 0; i < 3; i++) {
+				valuesAccelerometer[i] = event.values[i];
+			}
+			break;
+		case Sensor.TYPE_MAGNETIC_FIELD:
+			for (int i = 0; i < 3; i++) {
+				valuesMagneticField[i] = event.values[i];
+			}
+			break;
+		}
+
+		boolean success = SensorManager.getRotationMatrix(matrixR, matrixI,
+				valuesAccelerometer, valuesMagneticField);
+
+		if (success) {
+			SensorManager.getOrientation(matrixR, matrixValues);
+
+			// Calculate the heading
+			double azimuth = Math.toDegrees(matrixValues[0]);
+			double pitch = Math.toDegrees(matrixValues[1]);
+			double roll = Math.toDegrees(matrixValues[2]);
+
+			float angle = (float) Calculations.getAngle(azimuth,
+					currentLocation, target);
+			ImageView img = (ImageView) findViewById(R.id.pointer_overlay);
+			img.setRotation(angle);
+		}
+
+	}
+	String mCurrentPhotoPath;
+
+	private File createImageFile() throws IOException {
+	    // Create an image file name
+	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+	    String imageFileName = "JPEG_" + timeStamp + "_";
+	    File storageDir = Environment.getExternalStoragePublicDirectory(
+	            Environment.DIRECTORY_PICTURES);
+	    File image = File.createTempFile(
+	        imageFileName,  /* prefix */
+	        ".jpg",         /* suffix */
+	        storageDir      /* directory */
+	    );
+
+	    // Save a file: path for use with ACTION_VIEW intents
+	    mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+	    return image;
+	}
+	
+	static final int REQUEST_TAKE_PHOTO = 1;
+
+	private void dispatchTakePictureIntent() {
+	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    // Ensure that there's a camera activity to handle the intent
+	    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+	        // Create the File where the photo should go
+	        File photoFile = null;
+	        try {
+	            photoFile = createImageFile();
+	        } catch (IOException ex) {
+	            // Error occurred while creating the File
+	        }
+	        // Continue only if the File was successfully created
+	        if (photoFile != null) {
+	            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+	                    Uri.fromFile(photoFile));
+	            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+	        }
+	    }
+	}
+	
+	private void galleryAddPic() {
+	    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+	    File f = new File(mCurrentPhotoPath);
+	    Uri contentUri = Uri.fromFile(f);
+	    mediaScanIntent.setData(contentUri);
+	    this.sendBroadcast(mediaScanIntent);
+	}
+}

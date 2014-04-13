@@ -1288,7 +1288,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f060019;
         public static final int action_menu_presenter=0x7f06001a;
         public static final int action_mode_close_button=0x7f060027;
-        public static final int action_settings=0x7f060049;
+        public static final int action_settings=0x7f06004b;
         public static final int activity_chooser_view_content=0x7f060028;
         public static final int always=0x7f06000f;
         public static final int beginning=0x7f060014;
@@ -1319,7 +1319,7 @@ containing a value of this type.
         public static final int never=0x7f06000d;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int pointer_overlay=0x7f060048;
+        public static final int pointer_overlay=0x7f060049;
         public static final int progress_circular=0x7f06001b;
         public static final int progress_horizontal=0x7f06001c;
         public static final int radio=0x7f060032;
@@ -1344,6 +1344,8 @@ containing a value of this type.
         public static final int tabMode=0x7f060006;
         public static final int tableRow1=0x7f060040;
         public static final int tableRow2=0x7f060043;
+        public static final int take_pic=0x7f06004a;
+        public static final int targetName=0x7f060048;
         public static final int terrain=0x7f060003;
         public static final int title=0x7f06002e;
         public static final int top_action_bar=0x7f060023;

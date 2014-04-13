@@ -50,7 +50,6 @@ public class Calculations {
 		double dY = (lY - tY);
 		double angle = Math.toDegrees(Math.atan2(dX, dY));
 		return angle - currentAngle;
-
 	}
 
 }

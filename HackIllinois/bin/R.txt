@@ -305,7 +305,7 @@ int id action_context_bar 0x7f060020
 int id action_menu_divider 0x7f060019
 int id action_menu_presenter 0x7f06001a
 int id action_mode_close_button 0x7f060027
-int id action_settings 0x7f060049
+int id action_settings 0x7f06004b
 int id activity_chooser_view_content 0x7f060028
 int id always 0x7f06000f
 int id beginning 0x7f060014
@@ -336,7 +336,7 @@ int id navButton 0x7f060041
 int id never 0x7f06000d
 int id none 0x7f060000
 int id normal 0x7f060001
-int id pointer_overlay 0x7f060048
+int id pointer_overlay 0x7f060049
 int id progress_circular 0x7f06001b
 int id progress_horizontal 0x7f06001c
 int id radio 0x7f060032
@@ -361,6 +361,8 @@ int id submit_area 0x7f06003c
 int id tabMode 0x7f060006
 int id tableRow1 0x7f060040
 int id tableRow2 0x7f060043
+int id take_pic 0x7f06004a
+int id targetName 0x7f060048
 int id terrain 0x7f060003
 int id title 0x7f06002e
 int id top_action_bar 0x7f060023
