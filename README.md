@@ -5,6 +5,6 @@ Our HackIllinois project from April 2014. It's an augmented reality scavenger hu
 
 Authors
 ---------
-*Alex Cordonnier (ajcord)
-*Brandon Groff (EPICmynamesBG)
-*Brandon Chong (bchong95)
+* Alex Cordonnier (ajcord)
+* Brandon Groff (EPICmynamesBG)
+* Brandon Chong (bchong95)
