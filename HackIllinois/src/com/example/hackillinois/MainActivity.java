@@ -34,10 +34,14 @@ public class MainActivity extends Activity {
 	private CameraPreview preview;
 	private CameraActivity activity;
 	private SurfaceHolder holder;
+	public static Place nearestPlace;
+	private Location currentLocation;
 
     @SuppressWarnings("deprecation")
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
+    	
+    	
     	//Create the scavenger hunt object
     	ArrayList<Place> places = new ArrayList<Place>();
     	places.add(new Place("Siebel Center for Computer Science", false, new LatLng(40.113678, -88.224868),
@@ -48,8 +52,9 @@ public class MainActivity extends Activity {
     	startDate.setTime(Date.UTC(2014, 3, 11, 22, 0, 0));
     	Date endDate = new Date();
     	endDate.setTime(Date.UTC(2014,  4,  13,  10,  0,  0));
-    	ScavengerHunt hackIllinoisSH = new ScavengerHunt("HackIllinois Scavenger Hunt",
+    	final ScavengerHunt hackIllinoisSH = new ScavengerHunt("HackIllinois Scavenger Hunt",
     			startDate, endDate, places, 42);
+    	
     	
     	//Set up the map fragment
         super.onCreate(savedInstanceState);
@@ -61,7 +66,10 @@ public class MainActivity extends Activity {
         navButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Refresh.sendEmptyMessage(2);
-				startActivity(new Intent(MainActivity.this, CameraActivity.class));
+            	nearestPlace = Calculations.getNearestLocation(currentLocation, hackIllinoisSH.getPlaces());
+				Intent i = new Intent(MainActivity.this, CameraActivity.class);
+				i.putExtra("scavenger_hunt", hackIllinoisSH.toString());
+				startActivity(i);
 				finish();
             }
         });
@@ -82,12 +90,13 @@ public class MainActivity extends Activity {
         
         //Request receiving location updates
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        /*
+        
         LocationListener locationListener = new LocationListener() {
         	public void onLocationChanged(Location location) {
         		//doSomethingWithLocation(location);
         		//LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        		currentLocation = location;
         	}
         	
         	public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -95,13 +104,14 @@ public class MainActivity extends Activity {
         	public void onProviderDisabled(String provider) {}
         };
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        */
+        
         
         //Get the last known user location and zoom there
         Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         LatLng lastKnownLatLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, 10));
         map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+        currentLocation = lastKnownLocation;
         
         //Setup device camera
 //        try {

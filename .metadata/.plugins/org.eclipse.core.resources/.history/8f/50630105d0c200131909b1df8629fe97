@@ -1,0 +1,40 @@
+import java.util.ArrayList;
+
+
+public class Calculations 
+{
+	public static double getDistance(Place start, Place end)
+	{
+		LatLng startCoords = start.getCoords();
+		LatLng endCoords = end.getCoords();
+		Location startLoc = new Location(startCoords.getLatitude(),startCoords.getLongitude());
+		Location endLoc = new Location(endCoords.getLatitude(),endCoords.getLongitude());
+		return startLoc.distanceTo(endLoc);
+	}
+	
+	public static Place getNearestLocation(Place myLocation, ArrayList<Place> locations)
+	{
+		Place nearest = locations.get(0);
+		for(int i=0; i<locations.size();i++)
+		{
+			Place target = locations.get(i);
+			nearest = getDistance(myLocation,target)<getDistance(myLocation,nearest)?target:nearest;
+		}
+	}
+	
+	public static double getAngle(double currentAngle,Place myLocation,Place target)
+	{
+		LatLng locCoords = myLocation.getCoords();
+		LatLng targetCoords = target.getCoords();
+		double lX = locCoords.getLatitude();
+		double lY = locCoords.getLongitude();
+		double tX = targetCoords.getLatitude();
+		double tY = targetCoords.getLongitude();
+		double dX = (lX-tX);
+		double dY = (lY-tY);
+		double angle = Math.toDegrees(Math.atan2(dX, dY));
+		return angle-currentAngle;
+		
+	}
+	
+}
