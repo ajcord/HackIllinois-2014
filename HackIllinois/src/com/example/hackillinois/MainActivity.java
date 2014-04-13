@@ -1,19 +1,12 @@
 package com.example.hackillinois;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,18 +14,26 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity {
 	
 	private GoogleMap map;
 	private ViewSwitcher switcher;
+	private Camera cam;
+	private CameraPreview preview;
+	private CameraActivity activity;
+	private SurfaceHolder holder;
 
     @SuppressWarnings("deprecation")
 	@Override
@@ -104,6 +105,23 @@ public class MainActivity extends Activity {
         LatLng lastKnownLatLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLatLng, 10));
         map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+        
+        //Setup device camera
+//        try {
+//        	activity = new CameraActivity();
+//            cam = Camera.open();//activity.getCameraInstance();
+//            cam.unlock();
+//            preview = new CameraPreview(this,cam);
+//            holder = preview.getSurface();
+//			cam.setPreviewDisplay(holder);
+			
+			
+//		} catch (IOException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+        
+        
     }
  
 	// Refresh handler, necessary for updating the UI in a/the thread
@@ -113,36 +131,19 @@ public class MainActivity extends Activity {
 			switch(msg.what){
 			
 			case 2:
-				switcher.showNext();
+				startActivity(new Intent(MainActivity.this, CameraActivity.class));
+//				switcher.showNext();
+//				try{cam.startPreview();}
+//				catch(Exception e){ System.out.println("Camera failed to turn on: "+e.getMessage());}
+//				System.out.println("Turning On Camera");
 				break;
 			case 1:
 				switcher.showPrevious();
+				//cam.stopPreview();
+				System.out.println("Turning Off Camera");
 			default:
 				break;
 			}
 		}
 	};
-    
-    /** Check if this device has a camera */
-    private boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-            // this device has a camera
-            return true;
-        } else {
-            // no camera on this device
-            return false;
-        }
-    }
-    
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
-    }
 }
