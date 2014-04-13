@@ -24,10 +24,10 @@ public class CameraPreview extends SurfaceView implements
 		// Install a SurfaceHolder.Callback so we get notified when the
 		// underlying surface is created and destroyed.
 		mHolder = getHolder();
-		//mHolder.setFixedSize(200, 200);
+//		mHolder.setFixedSize(200, 200);
 		//mHolder.getSurfaceFrame().set(0, 200, 0, 0);
-		/*
-		Rect mSurfaceFrame = mHolder.getSurfaceFrame();
+		
+		/*Rect mSurfaceFrame = mHolder.getSurfaceFrame();
 		Parameters params = mCamera.getParameters();
 		params.setPreviewSize(mSurfaceFrame.width(), mSurfaceFrame.height() - 200);
 		mCamera.setParameters(params);*/
@@ -79,6 +79,14 @@ public class CameraPreview extends SurfaceView implements
 		
 		// start preview with new settings
 		try {
+			Camera.Parameters parameters=mCamera.getParameters();
+			Camera.Size size=getBestPreviewSize(w, h, parameters);
+
+			if (size!=null) {
+				parameters.setPreviewSize(size.width, size.height);
+				mCamera.setParameters(parameters);
+				mCamera.startPreview();
+			}
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
 
@@ -87,4 +95,26 @@ public class CameraPreview extends SurfaceView implements
 					+ e.getMessage());
 		}
 	}
+	
+    private Camera.Size getBestPreviewSize(int width, int height, Camera.Parameters parameters) {
+    	Camera.Size result=null;
+
+    	for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
+    		if (size.width<=width && size.height<=height) {
+    			if (result==null) {
+    				result=size;
+    			}
+    			else {
+    				int resultArea=result.width*result.height;
+    				int newArea=size.width*size.height;
+
+    				if (newArea>resultArea) {
+    					result=size;
+    				}
+    			}
+    		}
+    	}
+
+    	return(result);
+    }
 }

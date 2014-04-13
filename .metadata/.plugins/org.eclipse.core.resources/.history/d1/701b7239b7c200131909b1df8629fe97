@@ -1,0 +1,12 @@
+package com.example.hackillinois;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+
+public class PointerView extends View {
+	public PointerView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+	}
+	
+}

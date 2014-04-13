@@ -1268,11 +1268,13 @@ containing a value of this type.
         public static final int common_signin_btn_text_normal_light=0x7f02006c;
         public static final int common_signin_btn_text_pressed_dark=0x7f02006d;
         public static final int common_signin_btn_text_pressed_light=0x7f02006e;
-        public static final int ic_launcher=0x7f02006f;
-        public static final int ic_plusone_medium_off_client=0x7f020070;
-        public static final int ic_plusone_small_off_client=0x7f020071;
-        public static final int ic_plusone_standard_off_client=0x7f020072;
-        public static final int ic_plusone_tall_off_client=0x7f020073;
+        public static final int hack_illinois_arrow=0x7f02006f;
+        public static final int hack_illinois_scavenger_2=0x7f020070;
+        public static final int ic_launcher=0x7f020071;
+        public static final int ic_plusone_medium_off_client=0x7f020072;
+        public static final int ic_plusone_small_off_client=0x7f020073;
+        public static final int ic_plusone_standard_off_client=0x7f020074;
+        public static final int ic_plusone_tall_off_client=0x7f020075;
     }
     public static final class id {
         public static final int action_bar=0x7f06001f;
@@ -1290,7 +1292,8 @@ containing a value of this type.
         public static final int activity_chooser_view_content=0x7f060028;
         public static final int always=0x7f06000f;
         public static final int beginning=0x7f060014;
-        public static final int camera_preview=0x7f060048;
+        public static final int cameraToolbar=0x7f060046;
+        public static final int camera_preview=0x7f060045;
         public static final int checkbox=0x7f060030;
         public static final int collapseActionView=0x7f060011;
         public static final int default_activity_button=0x7f06002b;
@@ -1310,12 +1313,13 @@ containing a value of this type.
         public static final int listMode=0x7f060005;
         public static final int list_item=0x7f06002c;
         public static final int map=0x7f060044;
-        public static final int mapButton=0x7f060046;
+        public static final int mapButton=0x7f060047;
         public static final int middle=0x7f060015;
         public static final int navButton=0x7f060041;
         public static final int never=0x7f06000d;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
+        public static final int pointer_overlay=0x7f060048;
         public static final int progress_circular=0x7f06001b;
         public static final int progress_horizontal=0x7f06001c;
         public static final int radio=0x7f060032;
@@ -1340,8 +1344,6 @@ containing a value of this type.
         public static final int tabMode=0x7f060006;
         public static final int tableRow1=0x7f060040;
         public static final int tableRow2=0x7f060043;
-        public static final int tableRow3=0x7f060045;
-        public static final int tableRow4=0x7f060047;
         public static final int terrain=0x7f060003;
         public static final int title=0x7f06002e;
         public static final int top_action_bar=0x7f060023;

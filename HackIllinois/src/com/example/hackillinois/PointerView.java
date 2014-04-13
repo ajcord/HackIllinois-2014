@@ -1,0 +1,25 @@
+package com.example.hackillinois;
+
+import android.content.Context;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.view.View;
+//import android.graphics.;
+
+public class PointerView extends View {
+	private double rotation = 0;
+	//BufferedImage arrowImage = null;
+
+	public PointerView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
+
+	public void setRotation(double rot) {
+		this.rotation = rot % 360;
+	}
+
+	private void init() {
+		Paint mPaint = new Paint();
+	}
+}
